@@ -1,0 +1,77 @@
+[33mcommit 8f8e91944b1ab90339ea7ef3054b7c69d0f1e870[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: Joon Hoe Hiew <johiew@u81z10s06.42kl.edu.my>
+Date:   Fri Jul 31 17:14:36 2026 +0800
+
+    added test main
+
+[33mcommit 4272252064946de67fd7770e61792101bad4b43f[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: Joon Hoe Hiew <johiew@u81z10s06.42kl.edu.my>
+Date:   Fri Jul 31 14:56:16 2026 +0800
+
+    Readme
+
+[33mcommit ee138555acc810281d678a3d207552ecc8ba1c08[m
+Author: Joon Hoe Hiew <johiew@u81z10s06.42kl.edu.my>
+Date:   Fri Jul 31 09:20:40 2026 +0800
+
+    before test
+
+[33mcommit 9ccd7e9c93fc2bbb65f692073fe367380bdb58d0[m
+Author: Joon Hoe Hiew <johiew@u81z10s06.42kl.edu.my>
+Date:   Fri Jul 31 08:45:28 2026 +0800
+
+    update
+
+[33mcommit d1f7e27c0cfbb2cbd5c79779573d3ee31fc537f3[m
+Author: Joon Hoe Hiew <johiew@u81z10s02.42kl.edu.my>
+Date:   Wed Jul 29 15:11:41 2026 +0800
+
+    strjoin strtrim
+
+[33mcommit 2657f6c37edf30e5192b23f1b7b0fb9d3394091f[m
+Author: Joon Hoe Hiew <johiew@u81z10s02.42kl.edu.my>
+Date:   Wed Jul 29 12:47:47 2026 +0800
+
+    ft_substr modify
+
+[33mcommit cbca99c4195a3ffdf37a08592ead0ea794fbd989[m
+Author: Joon Hoe Hiew <johiew@u81z10s02.42kl.edu.my>
+Date:   Wed Jul 29 12:46:20 2026 +0800
+
+    substr
+
+[33mcommit 96dbbb05d718c73d9b83baadfc04c9751d75882a[m
+Author: Joon Hoe Hiew <johiew@u81z10s02.42kl.edu.my>
+Date:   Wed Jul 29 09:47:46 2026 +0800
+
+    atoi
+
+[33mcommit 234e3ff88e16febeabf063548785f24756cea3f5[m
+Author: Joon Hoe Hiew <johiew@u81z10s02.42kl.edu.my>
+Date:   Wed Jul 29 08:46:56 2026 +0800
+
+    tolower to strnstr
+
+[33mcommit 08871080bc699fda0ec1b947b342e6c32c9eb3c0[m
+Author: Joon Hoe Hiew <johiew@u81z04s02.42kl.edu.my>
+Date:   Mon Jul 27 15:14:34 2026 +0800
+
+    ft_memmove
+
+[33mcommit 14e5d001be952c5b0a720b82890a53c28392bfb0[m
+Author: Joon Hoe Hiew <johiew@u81z04s02.42kl.edu.my>
+Date:   Mon Jul 27 13:47:42 2026 +0800
+
+    memcpy
+
+[33mcommit 8d94f2c18d92f362ecfaa6abcf5f298e661bfcba[m
+Author: Joon Hoe Hiew <johiew@u81z04s02.42kl.edu.my>
+Date:   Mon Jul 27 12:44:11 2026 +0800
+
+    using size_t and includes stddef
+
+[33mcommit 8c0cfdbc1119f8f3863ff63ec675007864572ef1[m
+Author: Joon Hoe Hiew <johiew@u81z04s02.42kl.edu.my>
+Date:   Mon Jul 27 12:21:39 2026 +0800
+
+    memset
