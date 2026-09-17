@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import sys
-from typing import IO
+import typing
 
 
 def ft_stream_management() -> None:
@@ -12,14 +12,14 @@ def ft_stream_management() -> None:
     print("=== Cyber Archives Recovery & Preservation ===")
     print(f"Accessing file '{filename}'")
     try:
-        fd: IO[str] = open(filename)
+        fd: typing.IO[str] = open(filename)
     except OSError as e:
         sys.stderr.write(f"[STDERR] Error opening file '{filename}': {e}")
         return
 
     content = fd.read()
 
-    lines = content.splitlines()
+    lines: list[str] = content.splitlines()
     print("---\n")
     for i in lines:
         print(f"{i}")
@@ -31,7 +31,7 @@ def ft_stream_management() -> None:
     for i in lines:
         new_content.append(i + "#")
 
-    print("Transform data:")
+    print("\nTransform data:")
     print("---\n")
     for i in new_content:
         print(f"{i}")
@@ -43,17 +43,18 @@ def ft_stream_management() -> None:
     if new_file:
         print(f"Saving data to '{new_file}'")
         try:
-            new_fd: IO[str] = open(new_file, "w", newline="")
+            new_fd: typing.IO[str] = open(new_file, "w", newline="")
+            for n in range(len(new_content)):
+                if n < len(new_content) - 1:
+                    new_fd.write(new_content[n] + "\n")
+                else:
+                    new_fd.write(new_content[n])
+            print(f"Data saved in file '{new_file}'.")
+            new_fd.close()
         except OSError as e:
-            sys.stderr.write(f"[STDERR] Error opening file '{filename}': {e}")
-            return
-        for n in range(len(new_content)):
-            if n < len(new_content) - 1:
-                new_fd.write(new_content[n] + "\n")
-            else:
-                new_fd.write(new_content[n])
-        print(f"Data saved in file '{new_file}'")
-        new_fd.close()
+            sys.stderr.write(f"[STDERR] Error opening file '{new_file}': {e}")
+            sys.stderr.flush()
+            print("\nData not saved.")
     else:
         print("Not saving data.")
 

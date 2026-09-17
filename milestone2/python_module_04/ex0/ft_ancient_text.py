@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import sys
-from typing import IO
+import typing
 
 
 def ft_ancient_fragment() -> None:
@@ -12,20 +12,21 @@ def ft_ancient_fragment() -> None:
     print("=== Cyber Archives Recovery ===")
     print(f"Accessing file '{filename}'")
     try:
-        fd: IO[str] = open(filename)
+        fd: typing.IO[str] = open(filename)
+
+        content = fd.read()
+
+        lines = content.splitlines()
+        print("---\n")
+        for i in lines:
+            print(f"{i}")
+        print("\n---")
     except OSError as e:
         print(f"Error opening file '{filename}': {e}")
         return
-
-    content = fd.read()
-
-    lines = content.splitlines()
-    print("---\n")
-    for i in lines:
-        print(f"{i}")
-    print("\n---")
-    fd.close()
-    print(f"File '{filename}' closed.")
+    finally:
+        fd.close()
+        print(f"File '{filename}' closed.")
 
 
 if __name__ == "__main__":

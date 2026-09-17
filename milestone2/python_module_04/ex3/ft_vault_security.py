@@ -39,15 +39,16 @@ def ft_vault_security() -> None:
     check_status(success, message)
 
     print("Using 'secure_archive' to read from an inaccessible file:")
-    success, message = secure_archive("/etc/master.passwd", "read")
+    success, message = secure_archive("test.txt", "read")
     check_status(success, message)
 
     print("Using 'secure_archive' to read from a regular file:")
     success, message = secure_archive("ancient_fragment.txt", "read")
     check_status(success, message)
 
-    print("Using 'secure_archive' to write to a regular file:")
-    success, message = secure_archive("a.txt", "write", "how are you")
+    print("Using 'secure_archive' to write previous content to a new file:")
+    success, message = secure_archive("a.txt", "write",
+                                      "Content successfully written to file")
     check_status(success, message)
 
     print("Using 'secure_archive' to write to a regular file but no message:")
