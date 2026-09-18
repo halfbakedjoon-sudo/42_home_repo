@@ -91,7 +91,7 @@ class LogProcessor(DataProcessor):
             return False
 
     def ingest(self, data: typing.Union[dict[str, str],
-               typing.Sequence[dict[str, str]]]) -> None:
+               list[dict[str, str]]]) -> None:
         try:
             if not self.validate(data):
                 raise TypeError(" Got exception: Improper log data")
