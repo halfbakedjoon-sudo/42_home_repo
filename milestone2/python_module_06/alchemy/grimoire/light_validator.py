@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-from .light_spellbook import light_spell_allowed_ingredients
+# from .light_spellbook import light_spell_allowed_ingredients
+from . import light_spellbook
 
 
 def validate_ingredients(ingredients: str) -> str:
     arry = ingredients.replace(",", "").split(" ")
-    targets = light_spell_allowed_ingredients()
+    targets = light_spellbook.light_spell_allowed_ingredients()
     for inv in targets:
         for target in arry:
             if target.lower() == inv.lower():

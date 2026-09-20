@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from .light_validator import validate_ingredients
 
 
 def light_spell_allowed_ingredients() -> list[str]:
@@ -6,7 +7,7 @@ def light_spell_allowed_ingredients() -> list[str]:
 
 
 def light_spell_record(spell_name: str, ingredients: str) -> str:
-    from .light_validator import validate_ingredients
+    # from .light_validator import validate_ingredients
     if validate_ingredients(ingredients) == "VALID":
         return (f"Spell recorded: {spell_name} ({ingredients}) - VALID")
     else:
