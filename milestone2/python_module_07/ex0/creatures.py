@@ -8,44 +8,33 @@ class Creature(abc.ABC):
                      "pyrodon": "fire/flying",
                      "aquabub": "water",
                      "torragon": "water"}
+        self.creature = self.__class__.__name__
 
     @abc.abstractmethod
     def attack(self) -> str:
         pass
 
     def describe(self) -> str:
-        creature: str = self.__class__.__name__
-        return (f"{creature.capitalize()} is a "
-                f"{(self.name.get(creature.lower())).title()} type Creature")
+        return (f"{self.creature} is a "
+                f"{(self.name.get(self.creature.lower())).title()}"
+                " type Creature")
 
 
 class Flameling(Creature):
-    def __init__(self):
-        Creature.__init__(self)
-        self.creature = self.__class__.__name__
-
     def attack(self) -> str:
-        return ("Flameling uses Ember!")
+        return (f"{self.__class__.__name__} uses Ember!")
 
 
-class Pyrodon(Flameling):
+class Pyrodon(Creature):
     def attack(self) -> str:
-        return ("Pyrodon uses Flamethrower!")
+        return (f"{self.__class__.__name__} uses Flamethrower!")
 
 
 class Aquabub(Creature):
-    def __init__(self):
-        Creature.__init__(self)
-        self.creature = self.__class__.__name__
-
     def attack(self) -> str:
-        return ("Aquabub uses Water Gun!")
+        return (f"{self.__class__.__name__} uses Water Gun!")
 
 
-class Torragon(Aquabub):
+class Torragon(Creature):
     def attack(self) -> str:
-        return ("Torragon uses Hydro Pump!")
-
-
-if __name__ == "__main__":
-    test = Flameling()
+        return (f"{self.__class__.__name__} uses Hydro Pump!")

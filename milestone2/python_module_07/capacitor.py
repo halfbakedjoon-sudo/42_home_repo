@@ -3,9 +3,8 @@ import ex0
 from ex1 import HealingCreatureFactory, TransformCreatureFactory
 
 
-def testing_factory2(factory: type[ex0.CreatureFactory]) -> None:
-    print("Testing  Creature with healing capability")
-    fac = factory()
+def testing_factory2(fac: ex0.CreatureFactory) -> None:
+    print("Testing Creature with healing capability")
     fac_base = fac.create_base()
     print(" base:")
     print(fac_base.describe())
@@ -20,9 +19,8 @@ def testing_factory2(factory: type[ex0.CreatureFactory]) -> None:
     print()
 
 
-def testing_transform(factory: type[ex0.CreatureFactory]) -> None:
+def testing_transform(fac: ex0.CreatureFactory) -> None:
     print("Testing Creature with transform capability")
-    fac = factory()
     fac_base = fac.create_base()
     print(" base:")
     print(fac_base.describe())
@@ -39,8 +37,15 @@ def testing_transform(factory: type[ex0.CreatureFactory]) -> None:
     print(fac_base.attack())
     print(fac_base.revert())
     print()
+
+
+def main() -> None:
+    heal_fac = HealingCreatureFactory()
+    testing_factory2(heal_fac)
+
+    trans_fac = TransformCreatureFactory()
+    testing_transform(trans_fac)
 
 
 if __name__ == "__main__":
-    testing_factory2(HealingCreatureFactory)
-    testing_transform(TransformCreatureFactory)
+    main()

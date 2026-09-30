@@ -22,21 +22,21 @@ class TransformCapability(abc.ABC):
 
 
 class Creature(abc.ABC):
-    def __init__(self) -> None:
+    def __init__(self):
         self.name = {"sproutling": "grass",
                      "bloomelle": "grass/fairy",
                      "shiftling": "normal",
                      "morphagon": "normal/dragon"}
+        self.creature = self.__class__.__name__
 
     @abc.abstractmethod
     def attack(self) -> str:
         pass
 
     def describe(self) -> str:
-        creature: str = self.__class__.__name__
-        return (f"{creature.capitalize()} is a "
-                f"{(self.name.get((creature.lower()), 'unknow')).title()} type"
-                " Creature")
+        return (f"{self.creature} is a "
+                f"{(self.name.get(self.creature.lower())).title()}"
+                " type Creature")
 
 
 class Sproutling(Creature, HealCapability):

@@ -2,9 +2,14 @@
 from alchemy import grimoire
 
 
-if __name__ == "__main__":
+def kaboom_0() -> None:
     print("=== Kaboom 0 ===")
     print("Using grimoire module directly")
     result = grimoire.light_spell_record('Fantasy', 'Earth, wind and fire')
     print(f"Testing record light spell: "
           f"{result}")
+    print()
+
+
+if __name__ == "__main__":
+    kaboom_0()

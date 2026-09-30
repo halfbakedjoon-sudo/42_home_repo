@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import ex2
-import typing
 from ex2.strategy import BattleError
 from ex0 import CreatureFactory
 from ex2 import BattleStrategy
@@ -22,32 +21,31 @@ def fighting(opp1: tuple[Creature, BattleStrategy],
         raise
 
 
-def tournament(opp1: tuple[CreatureFactory, BattleStrategy],
-               opp2: tuple[CreatureFactory, BattleStrategy],
-               opp3: tuple[CreatureFactory | typing.Any, BattleStrategy |
-                           typing.Any] = (None, None)) -> None:
-    if opp3[0] and opp3[1]:
-        try:
+def battle(opp1: tuple[CreatureFactory, BattleStrategy],
+           opp2: tuple[CreatureFactory, BattleStrategy],
+           opp3: tuple[CreatureFactory | None, BattleStrategy
+                       | None] = (None, None)) -> None:
+    try:
+        if (isinstance(opp3[0], CreatureFactory) and
+                isinstance(opp3[1], BattleStrategy)):
             opp1_base = opp1[0].create_base()
             opp2_base = opp2[0].create_base()
             opp3_base = opp3[0].create_base()
-            print("*** Tournament ***\n3 opponents involved\n")
+            print("*** Tournament ***\n3 opponents involved\n\n* Battle *")
             fighting((opp1_base, opp1[1]), (opp2_base, opp2[1]))
             print()
+            print("* Battle *")
             fighting((opp1_base, opp1[1]), (opp3_base, opp3[1]))
             print()
+            print("* Battle *")
             fighting((opp2_base, opp2[1]), (opp3_base, opp3[1]))
-        except BattleError as e:
-            print(e)
-
-    else:
-        try:
+        else:
             opp1_base = opp1[0].create_base()
             opp2_base = opp2[0].create_base()
             print("*** Tournament ***\n2 opponents involved\n\n* Battle *")
             fighting((opp1_base, opp1[1]), (opp2_base, opp2[1]))
-        except BattleError as e:
-            print(e)
+    except BattleError as e:
+        print(e)
 
 
 if __name__ == "__main__":
@@ -55,22 +53,28 @@ if __name__ == "__main__":
     healfac = HealingCreatureFactory()
     defend = ex2.DefensiveStrategy()
     normal = ex2.NormalStrategy()
-
-    print("Tournament 0 (basic)")
-    print(" [ (Flameling+Normal), (Healing+Defensive) ]")
-    tournament((flamefac, normal),
-               (healfac, defend))
-    print()
     aggr = ex2.AggressiveStrategy()
-    print("Tournament 1 (error)")
-    print(" [ (Flameling+Aggressive), (Healing+Defensive) ]")
-    tournament((flamefac, aggr),
-               (healfac, defend))
-    print()
     aquafac = AquaFactory()
     transfac = TransformCreatureFactory()
-    print("Tournament 2 (multiple)")
-    print(" [ (Aquabub+Normal), (Healing+Defensive), (Transform+Aggressive) ]")
-    tournament((aquafac, normal),
+
+    try:
+        print("Tournament 0 (basic)")
+        print(" [ (Flameling+Normal), (Healing+Defensive) ]")
+        battle((flamefac, normal),
+               (healfac, defend))
+        print()
+
+        print("Tournament 1 (error)")
+        print(" [ (Flameling+Aggressive), (Healing+Defensive) ]")
+        battle((flamefac, aggr),
+               (healfac, defend))
+        print()
+
+        print("Tournament 2 (multiple)")
+        print(" [ (Aquabub+Normal), (Healing+Defensive), "
+              "(Transform+Aggressive) ]")
+        battle((aquafac, normal),
                (healfac, defend),
                (transfac, aggr))
+    except Exception as e:
+        print(e)

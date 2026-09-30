@@ -4,18 +4,17 @@ from ex0.creatures import Creature
 from ex1.creatures2 import Creature as Creature2
 from ex1.creatures2 import Sproutling, Bloomelle
 from ex1.creatures2 import Shiftling, Morphagon
-from ex1.creatures2 import TransformCapability
+from ex1.creatures2 import TransformCapability, HealCapability
 
 
 class BattleError(Exception):
     def __init__(self, message: str = "Default invalid match type.") -> None:
-        self.message = message
         super().__init__(message)
 
 
 class BattleStrategy(abc.ABC):
     @abc.abstractmethod
-    def act(self, creature):
+    def act(self, creature) -> None:
         pass
 
     @abc.abstractmethod
@@ -24,15 +23,24 @@ class BattleStrategy(abc.ABC):
 
 
 class NormalStrategy(BattleStrategy):
-    def act(self, creature: Creature | Creature2):
-        print(creature.attack())
+    def act(self, creature: Creature | Creature2) -> None:
+        try:
+            if self.is_valid(creature):
+                print(creature.attack())
+            else:
+                raise BattleError
+        except BattleError:
+            raise
 
-    def is_valid(self, creature) -> bool:
-        return True
+    def is_valid(self, creature: Creature | Creature2) -> bool:
+        if isinstance(creature, (Creature, Creature2)):
+            return True
+        else:
+            return False
 
 
 class AggressiveStrategy(BattleStrategy):
-    def act(self, creature: Shiftling | Morphagon):
+    def act(self, creature: Shiftling | Morphagon) -> None:
         try:
             if self.is_valid(creature):
                 print(creature.transform())
@@ -53,12 +61,20 @@ class AggressiveStrategy(BattleStrategy):
 
 
 class DefensiveStrategy(BattleStrategy):
-    def act(self, creature: Sproutling | Bloomelle):
-        print(creature.attack())
-        print(creature.heal())
+    def act(self, creature: Sproutling | Bloomelle) -> None:
+        try:
+            if self.is_valid(creature):
+                print(creature.attack())
+                print(creature.heal())
+            else:
+                raise BattleError("Battle error, aborting tournament: "
+                                  f"Invalid Creature '{creature.creature}' for"
+                                  " this defensive strategy")
+        except BattleError:
+            raise
 
     def is_valid(self, creature: Creature2) -> bool:
-        if isinstance(creature, TransformCapability):
+        if isinstance(creature, HealCapability):
             return True
         else:
             return False

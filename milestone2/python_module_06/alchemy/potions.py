@@ -2,8 +2,6 @@
 from .elements import create_air, create_earth
 from elements import create_fire, create_water
 
-__all__ = ["create_air", "create_earth", "create_fire", "create_water"]
-
 
 def healing_potion() -> str:
     return ("Healing potion brewed with "

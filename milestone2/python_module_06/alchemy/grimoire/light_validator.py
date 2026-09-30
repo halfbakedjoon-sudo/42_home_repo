@@ -4,10 +4,10 @@ from . import light_spellbook
 
 
 def validate_ingredients(ingredients: str) -> str:
-    arry = ingredients.replace(",", "").split(" ")
-    targets = light_spellbook.light_spell_allowed_ingredients()
-    for inv in targets:
-        for target in arry:
-            if target.lower() == inv.lower():
+    ing_list = ingredients.replace(",", "").split(" ")
+    allowed = light_spellbook.light_spell_allowed_ingredients()
+    for allow in allowed:
+        for ing in ing_list:
+            if ing.lower() == allow.lower():
                 return ("VALID")
     return ("INVALID")

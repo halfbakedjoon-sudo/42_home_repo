@@ -2,9 +2,8 @@
 import ex0
 
 
-def testing_factory(factory: type[ex0.CreatureFactory]) -> None:
+def testing_factory(fac: ex0.CreatureFactory) -> None:
     print("Testing factory")
-    fac = factory()
     fac_base = fac.create_base()
     print(fac_base.describe())
     print(fac_base.attack())
@@ -15,13 +14,11 @@ def testing_factory(factory: type[ex0.CreatureFactory]) -> None:
     print()
 
 
-def testing_battle(factory: type[ex0.CreatureFactory],
-                   factory2: type[ex0.CreatureFactory]
+def testing_battle(fac: ex0.CreatureFactory,
+                   fac2: ex0.CreatureFactory
                    ) -> None:
     print("Testing battle")
-    fac = factory()
     fac_base = fac.create_base()
-    fac2 = factory2()
     fac_base2 = fac2.create_base()
 
     print(fac_base.describe())
@@ -32,7 +29,13 @@ def testing_battle(factory: type[ex0.CreatureFactory],
     print(fac_base2.attack())
 
 
+def main() -> None:
+    flame_fac = ex0.FlameFactory()
+    aqua_fac = ex0.AquaFactory()
+    testing_factory(flame_fac)
+    testing_factory(aqua_fac)
+    testing_battle(flame_fac, aqua_fac)
+
+
 if __name__ == "__main__":
-    testing_factory(ex0.FlameFactory)
-    testing_factory(ex0.AquaFactory)
-    testing_battle(ex0.FlameFactory, ex0.AquaFactory)
+    main()
