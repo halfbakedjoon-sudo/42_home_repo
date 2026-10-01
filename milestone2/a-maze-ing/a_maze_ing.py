@@ -1,51 +1,59 @@
 #!/usr/bin/env python3
-from pydantic import BaseModel, Field, model_validator, ValidationError
-
-
-class Config(BaseModel):
-    width: int = Field(ge=2, le=50)
-    height: int = Field(ge=2, le=50)
-    entry: tuple[int, int]
-    exit: tuple[int, int]
-    output_file: str = Field(min_length=4, max_length=20)
-    perfect: bool
-
-    @model_validator(mode="after")
-    def config_check(self):
-        x, y = self.entry
-        v, w = self.exit
-        if x > self.width or v > self.width:
-            raise ValueError("Either entry or exit out of width range")
-        if y > self.height or w > self.height:
-            raise ValueError("Either entry or exit out of height range")
-        return self
-
-
-def parsing() -> None:
-    try:
-        with open("config.txt", "r") as fd:
-            content = fd.read().splitlines()
-        for line in content:
-            if line.startswith("#"):
-                content.remove(line)
-        content_p: dict = {}
-        for line in content:
-            x, y = line.split("=")
-            content_p[x] = y
-        entry: tuple[int, int] = content_p["ENTRY"].split(",")
-        exit: tuple[int, int] = content_p["EXIT"].split(",")
-        config = Config(width=content_p["WIDTH"],
-                        height=content_p["HEIGHT"],
-                        entry=entry,
-                        exit=exit,
-                        output_file=content_p["OUTPUT_FILE"],
-                        perfect=content_p["PERFECT"])
-        print(config)
-    except ValidationError as e:
-        errors = str(e)
-        print(e)
-        print(errors.splitlines())
+from parsing import parsing
 
 
 if __name__ == "__main__":
-    parsing()
+    config = parsing()
+    print(config)
+    w: dict[tuple[int, int], str] = {}
+    for n in range(config.height * 2 + 1):
+        for i in range(config.width * 2 + 1):
+            coor: tuple[int, int] = (n, i)
+            w[coor] = "╬\033[0m"
+
+    for n in range(config.height * 2 + 1):
+        for i in range(config.width * 2 + 1):
+            coor2: tuple[int, int] = (n, i)
+            if n == 0:
+                if n == 0 and i == 0:
+                    w[coor2] = "╔\033[0m"
+                elif n == 0 and i == config.width * 2:
+                    w[coor2] = "╗\033[0m"
+                elif i % 2 == 0:
+                    w[coor2] = "╦\033[0m"
+                elif n == 0:
+                    w[coor2] = "═══\033[0m"
+            elif n != 0 and n != config.height * 2:
+                if n % 2 == 1:
+                    if i % 2 == 0:
+                        w[coor2] = "║\033[0m"
+                    elif i % 2 == 1:
+                        w[coor2] = "   \033[0m"
+                if n % 2 == 0:
+                    if i == 0:
+                        w[coor2] = "╠\033[0m"
+                    elif i == config.width * 2:
+                        w[coor2] = "╣\033[0m"
+                    elif i % 2 == 1:
+                        w[coor2] = "═══\033[0m"
+            elif n == config.height * 2:
+                if n == config.height * 2 and i == 0:
+                    w[coor2] = "╚\033[0m"
+                elif n == config.height * 2 and i == config.width * 2:
+                    w[coor2] = "╝\033[0m"
+                elif i % 2 == 0:
+                    w[coor2] = "╩\033[0m"
+                elif n == config.height * 2:
+                    w[coor2] = "═══\033[0m"
+    x, y = config.entry
+    w[y * 2 + 1, x * 2 + 1] = " ■ \033[0m"
+    x, y = config.exit
+    w[y * 2 + 1, x * 2 + 1] = " ■ \033[0m"
+
+    print(w.keys())
+    for h in range(config.height * 2 + 1):
+        wall_list: list[str] = []
+        for r in range(config.width * 2 + 1):
+            wall_list.append(w[h, r])
+        wall = "".join(wall_list)
+        print(wall)
