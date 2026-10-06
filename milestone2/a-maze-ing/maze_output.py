@@ -9,12 +9,12 @@ def first_line(width: int,
     wall_list: list[str] = []
     wall_list.append("╔\033[0m")
     for x in range(width):
-        if maze_base[x, h].news.north:
+        if maze_base[x, h].news.up:
             wall_list.append("═══\033[0m")
         else:
             wall_list.append("   \033[0m")
         if x != width - 1:
-            if maze_base[x, h].news.east:
+            if maze_base[x, h].news.right:
                 wall_list.append("╦\033[0m")
             else:
                 wall_list.append("═\033[0m")
@@ -32,26 +32,11 @@ def second_line(width: int,
     wall_list.append("║\033[0m")
     for x in range(width):
         if x != width - 1:
-            if maze_base[x, h].news.east:
-                if (x, h) == entry:
-                    wall_list.append("\033[31m▐█▌\033[0m║")
-                elif (x, h) == exit:
-                    wall_list.append("\033[32m▐█▌\033[0m║")
-                else:
-                    wall_list.append("   ║\033[0m")
+            if maze_base[x, h].news.right:
+                wall_list.append("   ║\033[0m")
             else:
-                if (x, h) == entry:
-                    wall_list.append("\033[31m▐█▌ \033[0m")
-                elif (x, h) == exit:
-                    wall_list.append("\033[32m▐█▌ \033[0m")
-                else:
-                    wall_list.append("    \033[0m")
-    if (x, h) == entry:
-        wall_list.append("\033[31m▐█▌\033[0m║")
-    elif (x, h) == exit:
-        wall_list.append("\033[32m▐█▌\033[0m║")
-    else:
-        wall_list.append("   ║\033[0m")
+                wall_list.append("    \033[0m")
+    wall_list.append("   ║\033[0m")
     return "".join(wall_list)
 
 
@@ -62,16 +47,16 @@ def second_line2(width: int,
     wall_list: list[str] = []
     for x in range(width):
         if x == 0:
-            first_down = maze_base[x, h].news.south
+            first_down = maze_base[x, h].news.down
             if first_down:
                 wall_list.append("╠═══\033[0m")
             else:
                 wall_list.append("║   \033[0m")
         elif x != width - 1 and x != 0:
-            first_down = maze_base[x, h].news.south
-            first_left = maze_base[x, h].news.west
-            left_down = maze_base[x - 1, h].news.south
-            down_left = maze_base[x, h + 1].news.west
+            first_down = maze_base[x, h].news.down
+            first_left = maze_base[x, h].news.left
+            left_down = maze_base[x - 1, h].news.down
+            down_left = maze_base[x, h + 1].news.left
             if all((first_down, first_left, left_down, down_left)):
                 wall_list.append("╬═══\033[0m")
             elif all((first_down, first_left, left_down)):
@@ -99,10 +84,10 @@ def second_line2(width: int,
             else:
                 wall_list.append("    \033[0m")
         elif x == width - 1:
-            first_down = maze_base[x, h].news.south
-            first_left = maze_base[x, h].news.west
-            left_down = maze_base[x - 1, h].news.south
-            down_left = maze_base[x, h + 1].news.west
+            first_down = maze_base[x, h].news.down
+            first_left = maze_base[x, h].news.left
+            left_down = maze_base[x - 1, h].news.down
+            down_left = maze_base[x, h + 1].news.left
             if all((first_down, first_left, left_down, down_left)):
                 wall_list.append("╬═══╣\033[0m")
             elif all((first_down, first_left, left_down)):
@@ -118,7 +103,7 @@ def second_line2(width: int,
             elif all((first_down, left_down)):
                 wall_list.append("════╣\033[0m")
             elif all((first_down, down_left)):
-                wall_list.append("╔═══\033[0m")
+                wall_list.append("╔═══╣\033[0m")
             elif all((first_left, left_down)):
                 wall_list.append("╝   ║\033[0m")
             elif all((first_left, down_left)):
@@ -137,12 +122,12 @@ def last_line(width: int,
     wall_list: list[str] = []
     wall_list.append("╚\033[0m")
     for x in range(width):
-        if maze_base[x, h].news.south:
+        if maze_base[x, h].news.down:
             wall_list.append("═══\033[0m")
         else:
             wall_list.append("   \033[0m")
         if x != width - 1:
-            if maze_base[x, h].news.east:
+            if maze_base[x, h].news.right:
                 wall_list.append("╩\033[0m")
             else:
                 wall_list.append("═\033[0m")
@@ -155,7 +140,7 @@ def maze_print(width: int,
                maze_base: dict[tuple[int, int], MazeGenerator.Cell],
                entry: tuple,
                exit: tuple):
-    time.sleep(0.5)
+    # time.sleep(0.01)
     print(first_line(width, 0, maze_base))
     for y in range(height):
         print(second_line(width, y, maze_base, entry, exit))
