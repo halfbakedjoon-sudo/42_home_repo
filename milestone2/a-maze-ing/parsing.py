@@ -9,6 +9,8 @@ class Config(BaseModel):
     exit: tuple[int, int]
     output_file: str = Field(min_length=4, max_length=20)
     perfect: bool
+    speed: float = 0.01
+    solver: str = "BFS"
 
     @model_validator(mode="after")
     def config_check(self):
@@ -20,7 +22,10 @@ class Config(BaseModel):
             raise ValueError("Either entry or exit out of height range")
         if x is v and y is w:
             raise ValueError("Entry and exit cannot be the same")
+        if self.solver not in ["BFS", "DFS"]:
+            raise ValueError("Invalid solver")
         return self
+
 
 
 def parsing() -> Config:

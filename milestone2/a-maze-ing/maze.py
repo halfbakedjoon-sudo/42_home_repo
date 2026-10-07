@@ -20,6 +20,10 @@ class MazeGenerator:
         def __init__(self) -> None:
             self.news = self.NEWS()
             self.visited: bool = False
+            self.path: bool = False
+            self.fr: tuple[int, int] = (-1, -1)
+            self.real: bool = False
+            self.graphic: bool = False
 
     @staticmethod
     def maze_initialize(config: Config) -> dict[tuple[int, int], Cell]:
@@ -248,14 +252,6 @@ class MazeGenerator:
             if start != len(path):
                 x1, y1 = path[-1]
                 print(f"\033[{y1 * 2 + 2};{x1 * 4 + 2}H▐█▌")
-                # buf = []
-                # for item in path:  # full path, not path[start:]
-                #     x1, y1 = item
-                #     buf.append(f"\033[{y1 * 2 + 2};{x1 * 4 + 2}H▐█▌")
-                # buf.append(f"\033[{config.height * 2 + 1};1H")
-                # buf.append("\033[0m")
-                # print("".join(buf), end="", flush=True)
-                # time.sleep(0.1)
 
         print("\033[H\033[J", end="")
         maze_output.maze_print(config.width, config.height, maze_base,
@@ -504,6 +500,7 @@ class MazeGenerator:
             if start != len(path):
                 x1, y1 = path[-1]
                 print(f"\033[{y1 * 2 + 2};{x1 * 4 + 2}H▐█▌")
+                time.sleep(config.speed)
                 # buf = []
                 # for item in path:  # full path, not path[start:]
                 #     x1, y1 = item
@@ -511,7 +508,7 @@ class MazeGenerator:
                 # buf.append(f"\033[{config.height * 2 + 1};1H")
                 # buf.append("\033[0m")
                 # print("".join(buf), end="", flush=True)
-                # time.sleep(0.1)
+                # time.sleep(config.speed)
 
         print("\033[H\033[J", end="")
         maze_output.maze_print(config.width, config.height, maze_base,
@@ -522,6 +519,7 @@ class MazeGenerator:
                         coor: tuple[int, int]):
         x, y = coor
         maze_base[x, y].visited = True
+        maze_base[x, y].graphic = True
         maze_base[x, y].news.up = True
         maze_base[x, y].news.down = True
         maze_base[x, y].news.left = True
@@ -536,7 +534,7 @@ class MazeGenerator:
     def maze_gen_42(maze_base: dict[tuple[int, int], Cell], config: Config):
         if config.width > 8 and config.height > 6:
             x: int = round(config.width / 2 - 1) - 3
-            y: int = round(config.height / 2 - 1) - 1
+            y: int = round(config.height / 2 - 1) - 2
             coor_42: list[tuple[int, int]] = \
                 [(x, y), (x+4, y), (x+5, y), (x+6, y),
                  (x, y+1), (x+6, y+1),

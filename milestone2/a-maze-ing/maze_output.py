@@ -33,7 +33,10 @@ def second_line(width: int,
     for x in range(width):
         if x != width - 1:
             if maze_base[x, h].news.right:
-                wall_list.append("   ║\033[0m")
+                if maze_base[x, h].graphic:
+                    wall_list.append("\033[96m███\033[0m║")
+                else:
+                    wall_list.append("   ║\033[0m")
             else:
                 wall_list.append("    \033[0m")
     wall_list.append("   ║\033[0m")
