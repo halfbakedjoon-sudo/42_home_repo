@@ -102,6 +102,7 @@ if __name__ == "__main__":
         # print("Enter 'random' to generate random maze")
         # print("Enter 'exit' to quit")
 
+        path_mode: int = 1
         while True:
             print(f"\033[{config.height * 2 + 2};1H\033[J", end="")
             print(f"1. Seed number: {seed}\n"
@@ -116,7 +117,6 @@ if __name__ == "__main__":
             print(f"5. Solver: {config.solver}\n"
                 "   Enter '5' to change solver")
             print("6. Press 6 to toggle path finder")
-            path_mode: int = 1
             print("Press enter to generate same maze again")
             print("Enter 'random' to generate random maze")
             print("Enter 'exit' to quit")
@@ -172,21 +172,27 @@ if __name__ == "__main__":
                 break
             elif user_input1 == "6":
                 if path_mode == 1:
+                    path_mode = 0
                     print("\033[H", end="")
                     maze_print(config.width, config.height, maze_base, config.entry,
                                config.exit)
-                    path_mode = 0
+                    print(f"\033[{entry_y * 2 + 2};{entry_x * 4 + 2}H\033[31m▐█▌\033[0m")
+                    print(f"\033[{exit_y * 2 + 2};{exit_x * 4 + 2}H\033[32m▐█▌\033[0m",
+                          end="")
                 elif path_mode == 0:
+                    path_mode = 1
                     print("\033[H", end="")
                     maze_print(config.width, config.height, maze_base, config.entry,
                                config.exit)
                     for coor in real_path:
                         x, y = coor
                         print(f"\033[{y * 2 + 2};{x * 4 + 3}H\033[94m•\033[0m")
-                    path_mode = 1
+                    print(f"\033[{entry_y * 2 + 2};{entry_x * 4 + 2}H\033[31m▐█▌\033[0m")
+                    print(f"\033[{exit_y * 2 + 2};{exit_x * 4 + 2}H\033[32m▐█▌\033[0m",
+                          end="")
             elif user_input1.lower() == "exit":
                 break
             else:
                 continue
-        if user_input1 == "exit":
+        if user_input1.lower() == "exit":
             break
