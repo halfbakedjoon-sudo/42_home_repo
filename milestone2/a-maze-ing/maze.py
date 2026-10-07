@@ -44,7 +44,7 @@ class MazeGenerator:
                 if w == width - 1:
                     cell.news.right = True
                 maze_base[coor] = cell
-        return maze_base    
+        return maze_base
 
     @staticmethod
     def maze_gen(maze_base: dict[tuple[int, int], Cell], config: Config):

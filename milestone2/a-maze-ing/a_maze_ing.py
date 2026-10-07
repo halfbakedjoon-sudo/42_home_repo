@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from solver import maze_solver, maze_solver2
+from solver import bfs_solver, dfs_solver
 from parsing import parsing
 from maze_output import maze_print
 from maze import MazeGenerator
@@ -13,18 +13,15 @@ if __name__ == "__main__":
     config = parsing()
     while True:
         print("\033[H\033[J", end="")
-        # print("\033[48;5;44m", end="")
         random.seed(seed)
-        # print(config)
         maze = MazeGenerator()
         maze_base: dict[tuple[int, int], MazeGenerator.Cell] = {}
         path: list[tuple[int, int]] = []
         maze_base = maze.maze_initialize(config)
-        # print(maze_base.keys())
         maze_print(config.width, config.height, maze_base, config.entry,
                    config.exit)
-        # maze.maze_gen(maze_base, config)
         maze.maze_gen_42(maze_base, config)
+    
         if config.perfect:
             maze.maze_gen_perf(maze_base, config)
         else:
@@ -35,12 +32,14 @@ if __name__ == "__main__":
         print(f"\033[{entry_y * 2 + 2};{entry_x * 4 + 2}H\033[31m▐█▌\033[0m")
         print(f"\033[{exit_y * 2 + 2};{exit_x * 4 + 2}H\033[32m▐█▌\033[0m",
               end="")
+        real_path: list[tuple[int, int]]
         if config.solver == "BFS":
-            maze_solver(maze_base, config)
+            real_path = bfs_solver(maze_base, config)
         elif config.solver == "DFS":
-            maze_solver2(maze_base, config)
-        entry_x, entry_y = config.entry
-        exit_x, exit_y = config.exit
+            real_path = dfs_solver(maze_base, config)
+        else:
+            real_path = bfs_solver(maze_base, config)
+
         print(f"\033[{entry_y * 2 + 2};{entry_x * 4 + 2}H\033[31m▐█▌\033[0m")
         print(f"\033[{exit_y * 2 + 2};{exit_x * 4 + 2}H\033[32m▐█▌\033[0m",
               end="")
@@ -65,39 +64,63 @@ if __name__ == "__main__":
                 fd.write(output1 + "\n")
 
             fd.write("\n")
-            x1, y1 = config.entry
-            x2, y2 = config.exit
-            fd.write(f"{x1},{y1}\n")
-            fd.write(f"{x2},{y2}\n")
+            fd.write(f"{entry_x},{entry_y}\n")
+            fd.write(f"{exit_x},{exit_y}\n")
 
-            # directions: list[str] = []
-            # coor: tuple[int, int] = config.exit
-            # while coor != config.entry:
-            #     x, y = coor
-            #     x1, y2 = maze_base[coor].fr
-            #     if x > x1:
-            #         directions.insert(0, "E")
-            #     elif x < x1:
-            #         directions.insert(0, "E")
-            #     coor = maze_base[coor].fr
+            directions: list[str] = []
+            coor: tuple[int, int] = (exit_x, exit_y)
+            while coor != (entry_x, entry_y):
+                x, y = coor
+                x2, y2 = maze_base[coor].fr
+                if x2 > x:
+                    directions.insert(0, "W")
+                elif x2 < x:
+                    directions.insert(0, "E")
+                elif y2 > y:
+                    directions.insert(0, "N")
+                elif y2 < y:
+                    directions.insert(0, "S")
+                coor = maze_base[coor].fr
 
-        print(f"1. Seed number: {seed}\n"
-              "   Enter '1' to change seed.")
-        maze_type = "Perfect" if config.perfect else "Imperfect"
-        print(f"2. Maze type: {maze_type}\n"
-              "   Enter '2' to change type.")
-        print(f"3. Speed: {config.speed}\n"
-              "   Enter '3' to change speed")
-        print("4. Color scheme:\n"
-              "   Press '4' to change color")
-        print(f"5. Solver: {config.solver}\n"
-              "   Enter '5' to change solver")
-        print("Press enter to generate same maze again")
-        print("Enter 'random' to generate random maze")
-        print("Enter 'exit' to quit")
+            direction_output = "".join(directions)
+            fd.write(direction_output + "\n")
+
+        # print(f"1. Seed number: {seed}\n"
+        #       "   Enter '1' to change seed.")
+        # maze_type = "Perfect" if config.perfect else "Imperfect"
+        # print(f"2. Maze type: {maze_type}\n"
+        #       "   Enter '2' to change type.")
+        # print(f"3. Speed: {config.speed}\n"
+        #       "   Enter '3' to change speed")
+        # print("4. Color scheme:\n"
+        #       "   Press '4' to change color")
+        # print(f"5. Solver: {config.solver}\n"
+        #       "   Enter '5' to change solver")
+        # print("6. Press 6 to toggle path finder")
+        # path_mode: int = 1
+        # print("Press enter to generate same maze again")
+        # print("Enter 'random' to generate random maze")
+        # print("Enter 'exit' to quit")
 
         while True:
-            print(f"\033[{config.height * 2 + 16};1H\033[J", end="")
+            print(f"\033[{config.height * 2 + 2};1H\033[J", end="")
+            print(f"1. Seed number: {seed}\n"
+                "   Enter '1' to change seed.")
+            maze_type = "Perfect" if config.perfect else "Imperfect"
+            print(f"2. Maze type: {maze_type}\n"
+                "   Enter '2' to change type.")
+            print(f"3. Speed: {config.speed}\n"
+                "   Enter '3' to change speed")
+            print("4. Color scheme:\n"
+                "   Press '4' to change color")
+            print(f"5. Solver: {config.solver}\n"
+                "   Enter '5' to change solver")
+            print("6. Press 6 to toggle path finder")
+            path_mode: int = 1
+            print("Press enter to generate same maze again")
+            print("Enter 'random' to generate random maze")
+            print("Enter 'exit' to quit")
+            print(f"\033[{config.height * 2 + 17};1H\033[J", end="")
             user_input1: str = input("Input: ")
             if not user_input1:
                 break
@@ -109,7 +132,7 @@ if __name__ == "__main__":
                 break
             elif user_input1 == "2":
                 while True:
-                    print(f"\033[{config.height * 2 + 16};1H\033[J", end="")
+                    print(f"\033[{config.height * 2 + 17};1H\033[J", end="")
                     input_type = input("Please enter type (1 for perfect,"
                                        "0 for imperfect)\n"
                                        "Input 'back' to go up one level: \n")
@@ -126,7 +149,7 @@ if __name__ == "__main__":
                     continue
             elif user_input1 == "3":
                 while True:
-                    print(f"\033[{config.height * 2 + 16};1H\033[J", end="")
+                    print(f"\033[{config.height * 2 + 17};1H\033[J", end="")
                     input_speed = input("Please enter desired speed: ")
                     try:
                         config.speed = float(input_speed)
@@ -138,15 +161,29 @@ if __name__ == "__main__":
                 pass
             elif user_input1 == "5":
                 while True:
-                    print(f"\033[{config.height * 2 + 16};1H\033[J", end="")
+                    print(f"\033[{config.height * 2 + 17};1H\033[J", end="")
                     input_solver = input("Please enter solver 'BFS' 'DFS': ")
                     if input_solver.upper() not in ["BFS", "DFS"]:
                         print("Try again")
                         continue
                     else:
-                        config.solver = input_solver
+                        config.solver = input_solver.upper()
                         break
                 break
+            elif user_input1 == "6":
+                if path_mode == 1:
+                    print("\033[H", end="")
+                    maze_print(config.width, config.height, maze_base, config.entry,
+                               config.exit)
+                    path_mode = 0
+                elif path_mode == 0:
+                    print("\033[H", end="")
+                    maze_print(config.width, config.height, maze_base, config.entry,
+                               config.exit)
+                    for coor in real_path:
+                        x, y = coor
+                        print(f"\033[{y * 2 + 2};{x * 4 + 3}H\033[94m•\033[0m")
+                    path_mode = 1
             elif user_input1.lower() == "exit":
                 break
             else:

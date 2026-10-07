@@ -10,7 +10,8 @@ class Config(BaseModel):
     output_file: str = Field(min_length=4, max_length=20)
     perfect: bool
     speed: float = 0.01
-    solver: str = "BFS"
+    solver: str
+    speed: float
 
     @model_validator(mode="after")
     def config_check(self):
@@ -46,7 +47,9 @@ def parsing() -> Config:
                         entry=entry,
                         exit=exit,
                         output_file=content_p["OUTPUT_FILE"],
-                        perfect=content_p["PERFECT"])
+                        perfect=content_p["PERFECT"],
+                        solver=content_p["SOLVER"],
+                        speed=content_p["SPEED"])
     except ValidationError as errors:
         for error in errors.errors():
             if error["loc"]:
