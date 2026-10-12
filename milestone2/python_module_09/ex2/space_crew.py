@@ -1,6 +1,7 @@
 from pydantic import BaseModel, model_validator, Field, ValidationError
 from enum import Enum
 from datetime import datetime
+import random
 from data_generator import CrewMissionGenerator, DataConfig
 
 
@@ -57,32 +58,9 @@ class SpaceMission(BaseModel):
         return self
 
 
-def main() -> None:
-    config = DataConfig()
-    space_gen = CrewMissionGenerator(config)
-    missions = space_gen.generate_mission_data(2)
-    print()
-    print("Space Mission Crew Validation")
-    print("=========================================")
-    print("Valid mission created:")
-    crews: list[CrewMember] = []
+def space_crew(mission: dict,) -> None:
     try:
-        for crew in missions[0]['crew']:
-            crews.append(CrewMember(member_id=crew['member_id'],
-                                    name=crew['name'],
-                                    rank=crew['rank'],
-                                    age=crew['age'],
-                                    specialization=crew['specialization'],
-                                    years_experience=crew['years_experience'],
-                                    is_active=crew['is_active']))
-
-        test = SpaceMission(mission_id="M2024_MARS",
-                            mission_name="Mars Colony Establishment",
-                            destination="Mars",
-                            launch_date="2026-09-29",
-                            duration_days=900,
-                            crew=crews,
-                            budget_millions=2500.0)
+        test = SpaceMission(**mission)
         print(f"Mission: {test.mission_name}")
         print(f"ID: {test.mission_id}")
         print(f"Destination: {test.destination}")
@@ -96,126 +74,91 @@ def main() -> None:
         msg = e.errors()[0]["msg"]
         print(msg.removeprefix("Value error, "))
     print()
+
+
+def main() -> None:
+    crews1: list[dict[str, str]] = [{"member_id": "001",
+                                    "name": "Sarah Connor",
+                                     "rank": "commander",
+                                     "age": "40",
+                                     "specialization": "Mission Command",
+                                     "years_experience": "10",
+                                     "is_active": "True"},
+                                    {"member_id": "002",
+                                    "name": "John Smith",
+                                     "rank": "lieutenant",
+                                     "age": "40",
+                                     "specialization": "Navigation",
+                                     "years_experience": "10",
+                                     "is_active": "True"},
+                                    {"member_id": "003",
+                                    "name": "Alice Johnson",
+                                     "rank": "officer",
+                                     "age": "40",
+                                     "specialization": "Engineering",
+                                     "years_experience": "10",
+                                     "is_active": "True"}]
+
+    mission1 = {"mission_id": "M2024_MARS",
+                "mission_name": "Mars Colony Establishment",
+                "destination": "Mars",
+                "launch_date": "2026-09-29",
+                "duration_days": "900",
+                "crew": crews1,
+                "budget_millions": "2500.0"}
+
+    crews2: list[dict[str, str]] = [{"member_id": "001",
+                                     "name": "Sarah Connor",
+                                     "rank": "officer",
+                                     "age": "40",
+                                     "specialization": "Mission Command",
+                                     "years_experience": "10",
+                                     "is_active": "True"},
+                                    {"member_id": "002",
+                                     "name": "John Smith",
+                                     "rank": "lieutenant",
+                                     "age": "40",
+                                     "specialization": "Navigation",
+                                     "years_experience": "10",
+                                     "is_active": "True"},
+                                    {"member_id": "003",
+                                     "name": "Alice Johnson",
+                                     "rank": "officer",
+                                     "age": "40",
+                                     "specialization": "Engineering",
+                                     "years_experience": "10",
+                                     "is_active": "True"}]
+
+    mission2 = {"mission_id": "M2024_MARS",
+                "mission_name": "Mars Colony Establishment",
+                "destination": "Mars",
+                "launch_date": "2026-09-29",
+                "duration_days": "900",
+                "crew": crews2,
+                "budget_millions": "2500.0"}
+
+    print()
+    print("Space Mission Crew Validation")
+    print("=========================================")
+    print("Valid mission created:")
+    space_crew(mission1)
     print("=========================================")
     print("Expected validation error:")
-    crews2: list[CrewMember] = []
-    try:
-        for crew in missions[1]['crew']:
-            crews2.append(CrewMember(member_id=crew['member_id'],
-                                     name=crew['name'],
-                                     rank="cadet",
-                                     age=crew['age'],
-                                     specialization=crew['specialization'],
-                                     years_experience=crew['years_experience'],
-                                     is_active=crew['is_active']))
-        test = SpaceMission(mission_id="M2024_MARS",
-                            mission_name="Mars Colony Establishment",
-                            destination="Mars",
-                            launch_date="2026-09-29",
-                            duration_days=900,
-                            crew=crews2,
-                            budget_millions=2500.0)
-    except ValidationError as e:
-        msg = e.errors()[0]["msg"]
-        print(msg.removeprefix("Value error, "))
-    print()
-    crews3: list[CrewMember] = []
-    try:
-        for crew in missions[1]['crew']:
-            crews3.append(CrewMember(member_id=crew['member_id'],
-                                     name=crew['name'],
-                                     rank=crew['rank'],
-                                     age=crew['age'],
-                                     specialization=crew['specialization'],
-                                     years_experience=1,
-                                     is_active=crew['is_active']))
-        test = SpaceMission(mission_id="M2024_MARS",
-                            mission_name="Mars Colony Establishment",
-                            destination="Mars",
-                            launch_date="2026-09-29",
-                            duration_days=900,
-                            crew=crews3,
-                            budget_millions=2500.0)
-    except ValidationError as e:
-        msg = e.errors()[0]["msg"]
-        print(msg.removeprefix("Value error, "))
-    print()
-    crews4: list[CrewMember] = []
-    try:
-        for crew in missions[1]['crew']:
-            crews4.append(CrewMember(member_id=crew['member_id'],
-                                     name=crew['name'],
-                                     rank=crew['rank'],
-                                     age=crew['age'],
-                                     specialization=crew['specialization'],
-                                     years_experience=crew['years_experience'],
-                                     is_active=False))
-        test = SpaceMission(mission_id="M2024_MARS",
-                            mission_name="Mars Colony Establishment",
-                            destination="Mars",
-                            launch_date="2026-09-29",
-                            duration_days=900,
-                            crew=crews4,
-                            budget_millions=2500.0)
-    except ValidationError as e:
-        msg = e.errors()[0]["msg"]
-        print(msg.removeprefix("Value error, "))
-    print()
-    crews5: list[CrewMember] = []
-    try:
-        for crew in missions[1]['crew']:
-            crews5.append(CrewMember(member_id=crew['member_id'],
-                                     name=crew['name'],
-                                     rank=crew['rank'],
-                                     age=crew['age'],
-                                     specialization=crew['specialization'],
-                                     years_experience=crew['years_experience'],
-                                     is_active=crew['is_active']))
-        test = SpaceMission(mission_id="2024_MARS",
-                            mission_name="Mars Colony Establishment",
-                            destination="Mars",
-                            launch_date="2026-09-29",
-                            duration_days=900,
-                            crew=crews5,
-                            budget_millions=2500.0)
-    except ValidationError as e:
-        msg = e.errors()[0]["msg"]
-        print(msg.removeprefix("Value error, "))
+    space_crew(mission2)
 
-    # for mission in missions:
-    #     try:
-    #         for crew in mission['crew']:
-    #             crews.append(CrewMember(
-    #                 member_id=crew['member_id'],
-    #                 name=crew['name'],
-    #                 rank=crew['rank'],
-    #                 age=crew['age'],
-    #                 specialization=crew['specialization'],
-    #                 years_experience=crew['years_experience'],
-    #                 is_active=crew['is_active']))
 
-    #         test = SpaceMission(mission_id=mission['mission_id'],
-    #                             mission_name=mission['mission_name'],
-    #                             destination=mission['destination'],
-    #                             launch_date=mission['launch_date'],
-    #                             duration_days=mission['duration_days'],
-    #                             crew=mission['crew'],
-    #                             mission_status=mission['mission_status'],
-    #                             budget_millions=mission['budget_millions'])
-    #         print()
-    #         print(f"Mission: {test.mission_name}")
-    #         print(f"ID: {test.mission_id}")
-    #         print(f"Destination: {test.destination}")
-    #         print(f"Duration: {test.duration_days} days")
-    #         print(f"Budget: ${test.budget_millions}M")
-    #         print(f"Crew size: {len(test.crew)}")
-    #         print("Crew members:")
-    #         for crew in test.crew:
-    #             print(f"- {crew.name} ({crew.rank.value}) - "
-    #                   f"{crew.specialization}")
-    #     except ValidationError as e:
-    #         print(e.errors()[0]["msg"])
+def main2() -> None:
+    config = DataConfig()
+    space_gen = CrewMissionGenerator(config)
+    missions = space_gen.generate_mission_data(2)
+    for mission in missions:
+        print()
+        print("Space Mission Crew Validation")
+        print("=========================================")
+        print("Valid mission created:")
+        space_crew(mission)
 
 
 if __name__ == "__main__":
     main()
+    main2()

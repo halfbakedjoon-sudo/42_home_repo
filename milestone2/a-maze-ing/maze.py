@@ -3,6 +3,7 @@ import random
 import sys
 import time
 import maze_output
+import math
 
 
 class MazeGenerator:
@@ -62,7 +63,6 @@ class MazeGenerator:
                 break
             x, y = path[-1]
             maze_base[x, y].visited = True
-            # print(path)
             if x == 0 and y == 0:
                 if (maze_base[x + 1, y].visited and
                     maze_base[x, y + 1].visited):
@@ -391,12 +391,7 @@ class MazeGenerator:
                         if not maze_base[x, y + 1].visited:
                             maze_base[x, y].news.down = True
                             maze_base[x, y + 1].news.up = True
-                    print("\033[H", end="")
-                    maze_output.maze_print(config.width, config.height,
-                                           maze_base, config.entry,
-                                           config.exit)
-                    coor = (x - 1), y
-                    path.append(coor)
+                    path.append(((x - 1), y))
 
             elif direction == "right":
                 if (x + 1, y) in maze_base:
@@ -424,12 +419,7 @@ class MazeGenerator:
                         if not maze_base[x, y + 1].visited:
                             maze_base[x, y].news.down = True
                             maze_base[x, y + 1].news.up = True
-                    print("\033[H", end="")
-                    maze_output.maze_print(config.width, config.height,
-                                           maze_base, config.entry,
-                                           config.exit)
-                    coor = (x + 1), y
-                    path.append(coor)
+                    path.append(((x + 1), y))
 
             elif direction == "up":
                 if (x, y - 1) in maze_base:
@@ -457,12 +447,7 @@ class MazeGenerator:
                         if not maze_base[x + 1, y].visited:
                             maze_base[x, y].news.right = True
                             maze_base[x + 1, y].news.left = True
-                    print("\033[H", end="")
-                    maze_output.maze_print(config.width, config.height,
-                                           maze_base, config.entry,
-                                           config.exit)
-                    coor = x, (y - 1)
-                    path.append(coor)
+                    path.append((x, (y - 1)))
 
             elif direction == "down":
                 if (x, y + 1) in maze_base:
@@ -490,25 +475,43 @@ class MazeGenerator:
                         if not maze_base[x + 1, y].visited:
                             maze_base[x, y].news.right = True
                             maze_base[x + 1, y].news.left = True
-                    print("\033[H", end="")
-                    maze_output.maze_print(config.width, config.height,
-                                           maze_base, config.entry,
-                                           config.exit)
-                    coor = x, (y + 1)
-                    path.append(coor)
+                    path.append((x, (y + 1)))
 
             if start != len(path):
                 x1, y1 = path[-1]
-                print(f"\033[{y1 * 2 + 2};{x1 * 4 + 2}H▐█▌")
+                width, height = config.width, config.height
+                out: list[str] = []
+
+                first_row = max(0, y1 - 1)
+                last_row = min(height - 1, y1 + 1)
+
+                for r in range(first_row, last_row + 1):
+                    # wall line above row r (terminal row r*2 + 1)
+                    out.append(f"\033[{r * 2 + 1};1H")
+                    if r == 0:
+                        out.append(maze_output.first_line(width, 0, maze_base))
+                    else:
+                        out.append(
+                            maze_output.second_line2(width, r - 1, maze_base))
+                    # cell line of row r (terminal row r*2 + 2)
+                    out.append(f"\033[{r * 2 + 2};1H")
+                    out.append(maze_output.second_line(
+                        width, r, maze_base, config.entry, config.exit))
+
+                # wall line under the last redrawn row
+                out.append(f"\033[{last_row * 2 + 3};1H")
+                if last_row == height - 1:
+                    out.append(maze_output.last_line(width, last_row,
+                                                     maze_base))
+                else:
+                    out.append(maze_output.second_line2(width, last_row,
+                                                        maze_base))
+
+                # marker on the current cell
+                # out.append(f"\033[{y1 * 2 + 2};{x1 * 4 + 2}H▐█▌")
+
+                print("".join(out), end="", flush=True)
                 time.sleep(config.speed)
-                # buf = []
-                # for item in path:  # full path, not path[start:]
-                #     x1, y1 = item
-                #     buf.append(f"\033[{y1 * 2 + 2};{x1 * 4 + 2}H▐█▌")
-                # buf.append(f"\033[{config.height * 2 + 1};1H")
-                # buf.append("\033[0m")
-                # print("".join(buf), end="", flush=True)
-                # time.sleep(config.speed)
 
         print("\033[H\033[J", end="")
         maze_output.maze_print(config.width, config.height, maze_base,
@@ -532,9 +535,9 @@ class MazeGenerator:
 
     @staticmethod
     def maze_gen_42(maze_base: dict[tuple[int, int], Cell], config: Config):
-        if config.width > 8 and config.height > 6:
+        if config.width >= 9 and config.height >= 7:
             x: int = round(config.width / 2 - 1) - 3
-            y: int = round(config.height / 2 - 1) - 2
+            y: int = math.ceil(config.height / 2 - 1) - 2
             coor_42: list[tuple[int, int]] = \
                 [(x, y), (x+4, y), (x+5, y), (x+6, y),
                  (x, y+1), (x+6, y+1),

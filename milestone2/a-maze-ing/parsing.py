@@ -3,15 +3,14 @@ import sys
 
 
 class Config(BaseModel):
-    width: int = Field(ge=2, le=50)
-    height: int = Field(ge=2, le=50)
+    width: int = Field(ge=9)
+    height: int = Field(ge=7)
     entry: tuple[int, int]
     exit: tuple[int, int]
     output_file: str = Field(min_length=4, max_length=20)
-    perfect: bool
-    speed: float = 0.01
-    solver: str
-    speed: float
+    perfect: bool = Field(default=True)
+    speed: float = Field(default=0.01)
+    solver: str = Field(default="BFS")
 
     @model_validator(mode="after")
     def config_check(self):
@@ -28,10 +27,9 @@ class Config(BaseModel):
         return self
 
 
-
-def parsing() -> Config:
+def parsing(filename: str) -> Config:
     try:
-        with open("config.txt", "r") as fd:
+        with open(filename, "r") as fd:
             content = fd.read().splitlines()
         for line in content:
             if line.startswith("#"):

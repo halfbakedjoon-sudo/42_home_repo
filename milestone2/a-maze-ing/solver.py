@@ -45,7 +45,7 @@ def bfs_solver(maze_base: dict[tuple[int, int], MazeGenerator.Cell],
             break
         if not (x, y) == start:
             time.sleep(config.speed)
-            print(f"\033[{y * 2 + 2};{x * 4 + 3}H\033[93m•\033[0m")
+            print(f"\033[{y * 2 + 2};{x * 4 + 3}H\033[97m•\033[0m")
 
     real_path: list[tuple[int, int]] = []
     real_path.append(exit)
@@ -63,7 +63,7 @@ def bfs_solver(maze_base: dict[tuple[int, int], MazeGenerator.Cell],
     for coor in real_path:
         time.sleep(config.speed)
         x, y = coor
-        print(f"\033[{y * 2 + 2};{x * 4 + 3}H\033[94m•\033[0m")
+        print(f"\033[{y * 2 + 2};{x * 4 + 3}H\033[93m•\033[0m")
 
     print("\033[H", end="")
     maze_print(config.width, config.height, maze_base, config.entry,
@@ -71,7 +71,7 @@ def bfs_solver(maze_base: dict[tuple[int, int], MazeGenerator.Cell],
 
     for coor in real_path:
         x, y = coor
-        print(f"\033[{y * 2 + 2};{x * 4 + 3}H\033[94m•\033[0m")
+        print(f"\033[{y * 2 + 2};{x * 4 + 3}H\033[93m•\033[0m")
 
     return real_path
 

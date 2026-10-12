@@ -1,13 +1,23 @@
-import dotenv
+#!/usr/bin/env python3
 import os
+import sys
 
-if __name__ == "__main__":
+
+def oracle():
+    try:
+        import dotenv
+    except ModuleNotFoundError as e:
+        print(f"Module error: {e}")
+        sys.exit(1)
     dotenv.load_dotenv()
     matrix = os.environ.get("MATRIX_MODE")
     url = os.environ.get("DATABASE_URL")
     api_key = os.environ.get("API_KEY")
     log_level = os.environ.get("LOG_LEVEL")
     zion = os.environ.get("ZION_ENDPOINT")
+    print()
+    print("ORACLE STATUS: Reading the Matrix...")
+    print()
     if matrix:
         print(f"Mode: {matrix}")
     else:
@@ -18,11 +28,9 @@ if __name__ == "__main__":
     else:
         print("Missing DATABASE_URL config!")
 
-    if api_key == "42MalaysiaMarvelRivals":
+    if api_key:
         print("API Access: Authenticated")
-    elif not api_key:
-        print("Missing API_KEY config!")
-    elif api_key != "42MalaysiaMarvelRivals":
+    else:
         print("API Access: Rejected")
 
     if log_level:
@@ -36,6 +44,7 @@ if __name__ == "__main__":
         print("Missing ZION_ENDPOINT config!")
 
     print()
+    print("Environment security check:")
     try:
         if os.path.exists(".gitignore"):
             with open(".gitignore") as f:
@@ -61,3 +70,9 @@ if __name__ == "__main__":
     else:
         print("[KO] .env file not properly configured")
         print("[KO] Production overrides not available")
+    print()
+    print("The Oracle sees all configurations.")
+
+
+if __name__ == "__main__":
+    oracle()

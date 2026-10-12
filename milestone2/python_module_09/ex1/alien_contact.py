@@ -43,20 +43,9 @@ class Testing(BaseModel):
         return self
 
 
-def main():
-    print()
-    print("Alien Contact Log Validation")
-    print("========================================")
-    print("Valid contact report:")
+def alien_contact(contact: dict[str, str]) -> None:
     try:
-        test = Testing(contact_id="AC_2024_001",
-                       timestamp="2026-09-29",
-                       location="Area 51, Nevada",
-                       contact_type="radio",
-                       signal_strength=8.5,
-                       duration_minutes=45,
-                       witness_count=5,
-                       message_received="Greetings from Zeta Reticuli")
+        test = Testing(**contact)
 
         print(f"ID: {test.contact_id}")
         print(f"Type: {test.contact_type.value}")
@@ -65,102 +54,54 @@ def main():
         print(f"Duration.: {test.duration_minutes} minutes")
         print(f"Witness: {test.witness_count}")
         print(f"Message: '{test.message_received}'")
+        print()
     except ValidationError as e:
         msg = e.errors()[0]["msg"]
         print(msg.removeprefix("Value error, "))
+        print()
 
-    print()
+
+def main() -> None:
+    contact1: dict[str, str] = {
+        "contact_id": "AC_2024_001",
+        "timestamp": "2026-09-29",
+        "location": "Area 51, Nevada",
+        "contact_type": "radio",
+        "signal_strength": "8.5",
+        "duration_minutes": "45",
+        "witness_count": "5",
+        "message_received": "Greetings from Zeta Reticuli"}
+    contact2: dict[str, str] = {
+        "contact_id": "AC_2024_001",
+        "timestamp": "2026-09-29",
+        "location": "Area 51, Nevada",
+        "contact_type": "physical",
+        "signal_strength": "8.5",
+        "duration_minutes": "45",
+        "witness_count": "2",
+        "message_received": "Greetings from Zeta Reticuli"}
+
+    print("Alien Contact Log Validation")
+    print("========================================")
+    print("Valid contact report:")
+    alien_contact(contact1)
     print("========================================")
     print("Expected validation error:")
-    try:
-        test = Testing(contact_id="AC_2024_001",
-                       timestamp="2026-09-29",
-                       location="Area 51, Nevada",
-                       contact_type="telepathic",
-                       signal_strength=8.5,
-                       duration_minutes=45,
-                       witness_count=2,
-                       message_received="Greetings from Zeta Reticuli")
-    except ValidationError as e:
-        msg = e.errors()[0]["msg"]
-        print(msg.removeprefix("Value error, "))
-    print()
-    print("Expected validation error:")
-    try:
-        test = Testing(contact_id="AC_2024_001",
-                       timestamp="2026-09-29",
-                       location="Area 51, Nevada",
-                       contact_type="physical",
-                       signal_strength=8.5,
-                       duration_minutes=45,
-                       witness_count=2,
-                       message_received="Greetings from Zeta Reticuli")
-    except ValidationError as e:
-        msg = e.errors()[0]["msg"]
-        print(msg.removeprefix("Value error, "))
-    print()
-    print("Expected validation error:")
-    try:
-        test = Testing(contact_id="A_2024_001",
-                       timestamp="2026-09-29",
-                       location="Area 51, Nevada",
-                       contact_type="radio",
-                       signal_strength=8.5,
-                       duration_minutes=45,
-                       witness_count=5,
-                       message_received="Greetings from Zeta Reticuli")
-    except ValidationError as e:
-        msg = e.errors()[0]["msg"]
-        print(msg.removeprefix("Value error, "))
-    print()
-    print("Expected validation error:")
-    try:
-        test = Testing(contact_id="AC_2024_001",
-                       timestamp="2026-09-29",
-                       location="Area 51, Nevada",
-                       contact_type="radio",
-                       signal_strength=8.5,
-                       duration_minutes=45,
-                       witness_count=5,
-                       message_received="")
-    except ValidationError as e:
-        msg = e.errors()[0]["msg"]
-        print(msg.removeprefix("Value error, "))
+    alien_contact(contact2)
 
+
+def main2() -> None:
     config = DataConfig()
     contact_gen = AlienContactGenerator(config)
-    contacts = contact_gen.generate_contact_data(0)
+    contacts = contact_gen.generate_contact_data(2)
 
     for contact in contacts:
-        try:
-            test = Testing(contact_id=contact['contact_id'],
-                           timestamp=contact['timestamp'],
-                           location=contact['location'],
-                           contact_type=contact['contact_type'],
-                           signal_strength=contact['signal_strength'],
-                           duration_minutes=contact['duration_minutes'],
-                           witness_count=contact['witness_count'],
-                           message_received=contact['message_received'],
-                           is_verified=contact['is_verified'])
-            print()
-            print("Alien Contact Log Validation")
-            print("========================================")
-            print("Valid contact report:")
-            print(f"ID: {test.contact_id}")
-            print(f"Time: {test.timestamp}")
-            print(f"Location: {test.location}")
-            print(f"Type: {test.contact_type.value}")
-            print(f"Signal: {test.signal_strength}/10")
-            print(f"Duration.: {test.duration_minutes} minutes")
-            print(f"Witness: {test.witness_count}")
-            print(f"Message: {test.message_received}")
-            if test.is_verified:
-                print("Status: Verified")
-            else:
-                print("Status: Unverified")
-        except ValidationError as e:
-            print(e.errors()[0]["msg"])
+        print("Alien Contact Log Validation")
+        print("========================================")
+        print("Valid contact report:")
+        alien_contact(contact)
 
 
 if __name__ == "__main__":
     main()
+    main2()

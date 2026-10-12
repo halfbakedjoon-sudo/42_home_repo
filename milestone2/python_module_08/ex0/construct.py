@@ -1,11 +1,18 @@
+#!/usr/bin/env python3
 import site
 import sys
 
-if __name__ == "__main__":
+
+def construct():
+    """
+Authorized: sys, os, site modules, print()
+sys.base_prefix and sys.prefix both will be the same when in global
+sys.base_prefix is the global env
+sys.prefix will differ when in virtual env
+In sys.getsitepackages() you can see your installed packages in your venv
+    """
     base_prefix = sys.base_prefix
-    # print(sys.base_prefix)
     prefix = sys.prefix
-    # print(sys.prefix)
     virtual = sys.prefix.split("/")
     print("\nMATRIX STATUS: ", end="")
     if base_prefix != prefix:
@@ -29,3 +36,7 @@ if __name__ == "__main__":
               "source matrix_env/bin/activate # On Unix\n"
               "matrix_env\\Scripts\\activate # On Windows\n"
               "\nThen run this program again.")
+
+
+if __name__ == "__main__":
+    construct()

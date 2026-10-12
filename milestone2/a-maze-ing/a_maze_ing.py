@@ -10,7 +10,11 @@ import random
 if __name__ == "__main__":
     seed: int | float | str = random.randint(0, 9999)
     # seed: int | float | str = 42
-    config = parsing()
+    if len(sys.argv) != 2:
+        print("No config provided!")
+        sys.exit(1)
+
+    config = parsing(sys.argv[1])
     while True:
         print("\033[H\033[J", end="")
         random.seed(seed)
