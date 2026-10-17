@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 from pydantic import BaseModel, Field, ValidationError
 from datetime import datetime
-from data_generator import SpaceStationGenerator, DataConfig
+import json
+import typing
 
 
 class Testing(BaseModel):
@@ -15,10 +16,9 @@ class Testing(BaseModel):
     notes: str | None = Field(max_length=200, default=None, strict=True)
 
 
-def space_station(station: dict[str, str]) -> None:
+def space_station(station: dict[str, typing.Any]) -> None:
     try:
         test = Testing(**station)
-        print()
         print("Space Station Data Validation")
         print("========================================")
         print("Valid station created:")
@@ -32,8 +32,10 @@ def space_station(station: dict[str, str]) -> None:
             print("Status: Operational")
         else:
             print("Status: Non-operational")
+        print()
     except ValidationError as e:
-        print(e.errors()[0]["msg"])
+        print(f"{e.errors()[0]['loc'][0]}: {e.errors()[0]['msg']}")
+        print()
 
 
 def main() -> None:
@@ -52,20 +54,50 @@ def main() -> None:
                                 "last_maintenance": "2026-09-28",
                                 "is_operational": "True"}
     space_station(station1)
-    print()
     print("========================================")
     print("Expected validation error:")
     space_station(station2)
 
 
 def main2() -> None:
-    config = DataConfig()
-    station_gen = SpaceStationGenerator(config)
-    stations = station_gen.generate_station_data(5)
-    for station in stations:
-        space_station(station)
+    try:
+        from data_generator import SpaceStationGenerator, DataConfig
+        config = DataConfig()
+        station_gen = SpaceStationGenerator(config)
+        stations = station_gen.generate_station_data(5)
+        for station in stations:
+            space_station(station)
+    except Exception:
+        return
+
+
+def main3() -> None:
+    try:
+        with open("../generated_data/space_stations.json") as f:
+            datas = json.load(f)
+
+        for data in datas:
+            space_station(data)
+    except Exception as e:
+        print(e)
+
+
+def main4() -> None:
+    # invalid station
+    try:
+        with open("../generated_data/invalid_stations.json") as f:
+            datas = json.load(f)
+
+        for data in datas:
+            print("========================================")
+            print("Expected validation error:")
+            space_station(data)
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":
     main()
     main2()
+    main3()
+    main4()

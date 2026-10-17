@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 from pydantic import BaseModel, Field, ValidationError, model_validator
 from datetime import datetime
-from data_generator import AlienContactGenerator, DataConfig
 from enum import Enum
+import json
 
 
 class ContactType(str, Enum):
@@ -43,7 +43,7 @@ class Testing(BaseModel):
         return self
 
 
-def alien_contact(contact: dict[str, str]) -> None:
+def alien_contact(contact: dict) -> None:
     try:
         test = Testing(**contact)
 
@@ -91,17 +91,51 @@ def main() -> None:
 
 
 def main2() -> None:
-    config = DataConfig()
-    contact_gen = AlienContactGenerator(config)
-    contacts = contact_gen.generate_contact_data(2)
+    try:
+        from data_generator import AlienContactGenerator, DataConfig
+        config = DataConfig()
+        contact_gen = AlienContactGenerator(config)
+        contacts = contact_gen.generate_contact_data(2)
 
-    for contact in contacts:
-        print("Alien Contact Log Validation")
-        print("========================================")
-        print("Valid contact report:")
-        alien_contact(contact)
+        for contact in contacts:
+            print("Alien Contact Log Validation")
+            print("========================================")
+            print("Valid contact report:")
+            alien_contact(contact)
+    except Exception as e:
+        print(e)
+
+
+def main3() -> None:
+    try:
+        with open("../generated_data/alien_contacts.json") as f:
+            datas = json.load(f)
+
+        for data in datas:
+            print("Alien Contact Log Validation")
+            print("========================================")
+            print("Valid contact report:")
+            alien_contact(data)
+    except Exception as e:
+        print(e)
+
+
+def main4() -> None:
+    # invalid contacts
+    try:
+        with open("../generated_data/invalid_contacts.json") as f:
+            datas = json.load(f)
+
+        for data in datas:
+            print("========================================")
+            print("Expected validation error:")
+            alien_contact(data)
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":
     main()
     main2()
+    main3()
+    main4()

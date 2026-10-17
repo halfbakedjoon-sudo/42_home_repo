@@ -1,8 +1,7 @@
 from pydantic import BaseModel, model_validator, Field, ValidationError
 from enum import Enum
 from datetime import datetime
-import random
-from data_generator import CrewMissionGenerator, DataConfig
+import json
 
 
 class Rank(str, Enum):
@@ -58,7 +57,7 @@ class SpaceMission(BaseModel):
         return self
 
 
-def space_crew(mission: dict,) -> None:
+def space_crew(mission: dict) -> None:
     try:
         test = SpaceMission(**mission)
         print(f"Mission: {test.mission_name}")
@@ -137,7 +136,6 @@ def main() -> None:
                 "crew": crews2,
                 "budget_millions": "2500.0"}
 
-    print()
     print("Space Mission Crew Validation")
     print("=========================================")
     print("Valid mission created:")
@@ -148,17 +146,35 @@ def main() -> None:
 
 
 def main2() -> None:
-    config = DataConfig()
-    space_gen = CrewMissionGenerator(config)
-    missions = space_gen.generate_mission_data(2)
-    for mission in missions:
-        print()
-        print("Space Mission Crew Validation")
-        print("=========================================")
-        print("Valid mission created:")
-        space_crew(mission)
+    try:
+        from data_generator import CrewMissionGenerator, DataConfig
+        config = DataConfig()
+        space_gen = CrewMissionGenerator(config)
+        missions = space_gen.generate_mission_data(2)
+        for mission in missions:
+            print("Space Mission Crew Validation")
+            print("=========================================")
+            print("Valid mission created:")
+            space_crew(mission)
+    except Exception as e:
+        print(e)
+
+
+def main4() -> None:
+    try:
+        with open("../generated_data/space_missions.json") as f:
+            datas = json.load(f)
+
+        for data in datas:
+            print("Space Mission Crew Validation")
+            print("=========================================")
+            print("Valid mission created:")
+            space_crew(data)
+    except Exception as e:
+        print(e)
 
 
 if __name__ == "__main__":
     main()
     main2()
+    main4()
