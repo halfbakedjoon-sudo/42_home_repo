@@ -113,6 +113,8 @@ def second_line2(width: int,
                 wall_list.append("║   ║")
             elif all((left_down, down_left)):
                 wall_list.append("╗   ║")
+            elif first_down:
+                wall_list.append(" ═══╣")
             else:
                 wall_list.append("    ║")
     return "".join(wall_list)
